@@ -1,0 +1,23 @@
+{
+  "name": "Nigerian Tax Calculator",
+  "short_name": "Tax Calculator",
+  "description": "A simple Nigerian tax calculator to estimate your personal income tax.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F5F7FB",
+  "theme_color": "#1653FF",
+  "orientation": "portrait",
+  "icons": [
+  {
+    "src": "/icons/icon-192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  },
+  {
+    "src": "/icons/icon-512.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }
+]
+}
