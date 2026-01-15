@@ -87,7 +87,7 @@ const AiAssistant = () => {
       {/* HEADER */}
       <header className="py-6 flex items-center gap-15 sm:gap-30 lg:gap-45 px-4 border-b border-neutral max-w-3xl mx-auto w-full mb-5">
         <button
-          onClick={() => navigate("/calculator")}
+          onClick={() => navigate("/")}
           className="text-start inline-flex items-center gap-2 text-primary/70 hover:text-primary transition-colors duration-150 ease-in-out font-medium cursor-pointer"
         >
           <svg
