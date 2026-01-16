@@ -13,7 +13,7 @@ interface AssistantResponse {
   reply: string;
 }
 
-const API_URL = "https://api.example.com/tax-assistant/chat";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const suggestedQuestions = [
   "How is the Consolidated Relief Allowance calculated?",
@@ -43,7 +43,7 @@ const AiAssistant = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(`${apiUrl}/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
