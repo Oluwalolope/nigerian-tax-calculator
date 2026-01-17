@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
+import IncomeBarChart from "../components/IncomeBarChart";
+import DonutChart from "../components/DonutChart";
 
 const container = {
   hidden: { opacity: 0 },
@@ -101,19 +103,15 @@ const Result = () => {
             </p>
 
             {/* Donut Placeholder */}
-            <div className="mx-auto h-48 w-48 rounded-full border-18 border-blue-600/20 relative">
-              <div className="absolute inset-0 flex items-center justify-center text-primary/95 font-semibold">
-                ₦10,500
-              </div>
-            </div>
+            <DonutChart taxOwed={taxResults?.taxOwed || 0} afterTaxIncome={taxResults?.afterTaxIncome || 0} />
 
             <div className="mt-6 flex justify-center gap-6 text-sm">
               <span className="flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full text-primary/95" />
+                <span className="h-3 w-3 rounded-full bg-[#2563EB]" />
                 After Tax Income
               </span>
               <span className="flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full text-primary/75" />
+                <span className="h-3 w-3 rounded-full bg-[#DBEAFE]" />
                 Tax Owed
               </span>
             </div>
@@ -132,17 +130,7 @@ const Result = () => {
             </p>
 
             {/* Bar Placeholder */}
-            <div className="flex items-end justify-center gap-10 h-48">
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-10 h-36 bg-blue-200 rounded-lg" />
-                <span className="text-xs text-primary/75">₦42,200</span>
-              </div>
-
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-10 h-28 bg-blue-600 rounded-lg" />
-                <span className="text-xs text-primary/75">₦30,700</span>
-              </div>
-            </div>
+            <IncomeBarChart grossIncome={taxResults?.grossIncome || 0} taxableIncome={taxResults?.taxableIncome || 0} afterTaxIncome={taxResults?.afterTaxIncome || 0} />
           </motion.div>
         </motion.section>
 

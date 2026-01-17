@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import AppContext from "../store/AppContext";
 
 type Role = "user" | "assistant";
 
@@ -10,7 +11,7 @@ interface Message {
 }
 
 interface AssistantResponse {
-  reply: string;
+  AIResponse: string;
 }
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -22,6 +23,7 @@ const suggestedQuestions = [
 ];
 
 const AiAssistant = () => {
+  const appCtx = useContext(AppContext);
   const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -49,12 +51,8 @@ const AiAssistant = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: text,
-          context: {
-            grossIncome: 200000,
-            deductions: 55000,
-            taxableIncome: 145000,
-          },
+          userID: appCtx.userID,
+          prompt: text,
         }),
       });
 
@@ -66,7 +64,7 @@ const AiAssistant = () => {
 
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: data.reply },
+        { role: "assistant", content: data.AIResponse },
       ]);
     } catch {
       setMessages((prev) => [
@@ -158,7 +156,7 @@ const AiAssistant = () => {
               <button
                 key={question}
                 onClick={() => sendMessage(question)}
-                disabled={loading}
+                disabled={loading || appCtx.userID === ''}
                 className="rounded-full bg-neutral/70 px-4 py-2 text-sm text-slate-700 transition hover:bg-neutral disabled:opacity-50 cursor-pointer"
               >
                 {question}
@@ -173,10 +171,11 @@ const AiAssistant = () => {
         <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-4">
           <input
             value={input}
+            disabled={loading || appCtx.userID === ''}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
-            placeholder="Ask Tax Assistance"
-            className="flex-1 rounded-full bg-blue-100/70 px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder={appCtx.userID === '' ? 'Please use the tax calculator to ask tax assistance' : 'Ask Tax Assistance'}
+            className="flex-1 rounded-full bg-blue-100/70 px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
       </footer>

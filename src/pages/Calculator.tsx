@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AppContext from "../store/AppContext";
 
 interface taxData {
   monthlyGrossIncome: number;
@@ -45,16 +46,17 @@ const inputStyle =
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Calculator = () => {
+  const appCtx = useContext(AppContext);
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [taxData, setTaxData] = useState<taxData>({
-    monthlyGrossIncome: 234000,
-    additionalMonthlyIncome: 15000,
-    annualPensionContribution: 10000,
-    annualNHFContributions: 50000,
-    annualRentPaid: 500000,
-    lifeInsurancePremiums: 100000
+    monthlyGrossIncome: 0,
+    additionalMonthlyIncome: 0,
+    annualPensionContribution: 0,
+    annualNHFContributions: 0,
+    annualRentPaid: 0,
+    lifeInsurancePremiums: 0
   });
 
   const handleInputChange = (field: keyof taxData, value: number) => {
@@ -85,12 +87,9 @@ const Calculator = () => {
 
       const data: calculationResponse = await response.json();
 
-      // Handle the tax calculation response as needed
-      console.log(data);
-
+      appCtx.handleUserIDChange(data.userID);
       navigate("/result", { state: { taxResults: data.taxCalculation } });
     } catch (err) {
-      // Handle errors as needed
       setError("An error occurred while calculating taxes.");
       console.error(err);
     } finally {
