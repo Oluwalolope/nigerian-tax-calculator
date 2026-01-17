@@ -1,5 +1,30 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+interface taxData {
+  monthlyGrossIncome: number;
+  additionalMonthlyIncome: number;
+  annualPensionContribution: number;
+  annualNHFContributions: number;
+  annualRentPaid: number;
+  lifeInsurancePremiums: number;
+}
+
+interface calculationResponse {
+  success: boolean,
+  message: string,
+  userID: string,
+  taxCalculation: {
+    grossIncome: number,
+    totalDeductions: number,
+    taxableIncome: number,
+    taxOwed: number,
+    effectiveTaxRate: number,
+    afterTaxIncome: number
+  }
+}
+
 
 const container = {
   hidden: { opacity: 0 },
@@ -17,8 +42,62 @@ const item = {
 const inputStyle =
   "w-full rounded-xl bg-blue-100/60 px-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const Calculator = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [taxData, setTaxData] = useState<taxData>({
+    monthlyGrossIncome: 234000,
+    additionalMonthlyIncome: 15000,
+    annualPensionContribution: 10000,
+    annualNHFContributions: 50000,
+    annualRentPaid: 500000,
+    lifeInsurancePremiums: 100000
+  });
+
+  const handleInputChange = (field: keyof taxData, value: number) => {
+    setTaxData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  }
+
+
+  const calculateTax = async (taxData: taxData) => {
+    if (taxData.monthlyGrossIncome === 0 || taxData.additionalMonthlyIncome === 0 || taxData.annualPensionContribution === 0 || taxData.annualNHFContributions === 0 || taxData.annualRentPaid === 0 || taxData.lifeInsurancePremiums === 0 || loading) return;
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${apiUrl}/tax/calculate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(taxData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to calculate taxes");
+      }
+
+      const data: calculationResponse = await response.json();
+
+      // Handle the tax calculation response as needed
+      console.log(data);
+
+      navigate("/result", { state: { taxResults: data.taxCalculation } });
+    } catch (err) {
+      // Handle errors as needed
+      setError("An error occurred while calculating taxes.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-10">
       <motion.div
@@ -81,6 +160,8 @@ const Calculator = () => {
                 type="number"
                 placeholder="0.00"
                 className={inputStyle}
+                onChange={(e) => handleInputChange("monthlyGrossIncome", Number(e.target.value))}
+                value={taxData.monthlyGrossIncome}
               />
             </div>
 
@@ -92,6 +173,8 @@ const Calculator = () => {
                 type="number"
                 placeholder="0.00"
                 className={inputStyle}
+                onChange={(e) => handleInputChange("additionalMonthlyIncome", Number(e.target.value))}
+                value={taxData.additionalMonthlyIncome}
               />
             </div>
           </div>
@@ -119,6 +202,8 @@ const Calculator = () => {
                 type="number"
                 placeholder="0.00"
                 className={inputStyle}
+                onChange={(e) => handleInputChange("annualPensionContribution", Number(e.target.value))}
+                value={taxData.annualPensionContribution}
               />
             </div>
 
@@ -130,6 +215,8 @@ const Calculator = () => {
                 type="number"
                 placeholder="0.00"
                 className={inputStyle}
+                onChange={(e) => handleInputChange("annualNHFContributions", Number(e.target.value))}
+                value={taxData.annualNHFContributions}
               />
             </div>
 
@@ -141,6 +228,8 @@ const Calculator = () => {
                 type="number"
                 placeholder="0.00"
                 className={inputStyle}
+                onChange={(e) => handleInputChange("annualRentPaid", Number(e.target.value))}
+                value={taxData.annualRentPaid}
               />
             </div>
 
@@ -152,19 +241,32 @@ const Calculator = () => {
                 type="number"
                 placeholder="0.00"
                 className={inputStyle}
+                onChange={(e) => handleInputChange("lifeInsurancePremiums", Number(e.target.value))}
+                value={taxData.lifeInsurancePremiums}
               />
             </div>
           </div>
         </motion.section>
 
+        {/* handle error messages */}
+        {error && (
+          <div
+            className="rounded-2xl border border-red-200 bg-red-50 p-4 mb-6"
+          >
+            <p className="text-red-700 text-sm">{error}</p>
+          </div>
+        )}
+
         {/* CTA */}
         <motion.div variants={item}>
           <motion.button
+            onClick={() => calculateTax(taxData)}
+            disabled={loading}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.97 }}
-            className="w-full rounded-2xl bg-primary/90 py-4 text-white font-semibold shadow-xl shadow-blue-600/30 cursor-pointer"
+            className="w-full rounded-2xl bg-primary/90 py-4 text-white font-semibold shadow-xl shadow-blue-600/30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition"
           >
-            See My Tax Break Down
+            {loading ? "Calculating your taxes..." : "See My Tax Break Down"}
           </motion.button>
         </motion.div>
       </motion.div>

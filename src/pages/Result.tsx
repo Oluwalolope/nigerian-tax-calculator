@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const container = {
   hidden: { opacity: 0 },
@@ -16,6 +16,10 @@ const item = {
 
 const Result = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { taxResults } = location.state || {};
+
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-10">
       <motion.div
@@ -61,10 +65,10 @@ const Result = () => {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10"
         >
           {[
-            { label: "Gross Income", value: "₦200,000" },
-            { label: "Total Deductions", value: "₦55,000" },
-            { label: "Tax Owed", value: "₦10,000" },
-            { label: "Effective Tax Rate", value: "16%" },
+            { label: "Gross Income", value: taxResults?.grossIncome || "₦0" },
+            { label: "Total Deductions", value: taxResults?.totalDeductions || "₦0" },
+            { label: "Tax Owed", value: taxResults?.taxOwed || "₦0" },
+            { label: "Effective Tax Rate", value: taxResults?.effectiveTaxRate ? `${taxResults.effectiveTaxRate}%` : "0%" },
           ].map((card) => (
             <motion.div
               key={card.label}
@@ -156,10 +160,10 @@ const Result = () => {
 
           <div className="space-y-4">
             {[
-              ["Gross Annual Income", "₦200,000", 'minus'],
-              ["Total Deductions", "₦55,000", 'equals'],
-              ["Taxable Income", "₦145,000", 'apply tax brackets'],
-              ["Final Tax Amount", "₦10,500"],
+              ["Gross Annual Income", taxResults?.grossIncome ? `₦${taxResults.grossIncome.toLocaleString()}` : "₦0", 'minus'],
+              ["Total Deductions", taxResults?.totalDeductions ? `₦${taxResults.totalDeductions.toLocaleString()}` : "₦0", 'equals'],
+              ["Taxable Income", taxResults?.taxableIncome ? `₦${taxResults.taxableIncome.toLocaleString()}` : "₦0", 'apply tax brackets'],
+              ["Final Tax Amount", taxResults?.taxOwed ? `₦${taxResults.taxOwed.toLocaleString()}` : "₦0", null],
             ].map(([label, value, operation]) => (
               <>
                 <div
