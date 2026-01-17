@@ -128,10 +128,12 @@ const Home = () => {
         {/* DISCLAIMER */}
         <motion.footer
           variants={item}
-          className="mt-12 text-center text-sm text-primary max-w-4xl mx-auto"
+          className="mt-12 text-start flex gap-x-1 text-sm text-primary max-w-4xl mx-auto"
         >
+          <strong className="text-primary/90">Disclaimer:</strong>
+          
           <p className="text-secondary/80">
-            <strong className="text-primary/90">Disclaimer:</strong> This calculator provides estimates based
+            This calculator provides estimates based
             on the 2026 Nigerian tax reforms. For official tax advice, please
             consult with a certified tax professional or the Federal Inland
             Revenue Service (FIRS).

@@ -157,7 +157,7 @@ const AiAssistant = () => {
                 key={question}
                 onClick={() => sendMessage(question)}
                 disabled={loading || appCtx.userID === ''}
-                className="rounded-full bg-neutral/70 px-4 py-2 text-sm text-slate-700 transition hover:bg-neutral disabled:opacity-50 cursor-pointer"
+                className="rounded-full bg-neutral/70 px-4 py-2 text-start text-sm text-slate-700 transition hover:bg-neutral disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {question}
               </button>

@@ -68,7 +68,13 @@ const Calculator = () => {
 
 
   const calculateTax = async (taxData: taxData) => {
-    if (taxData.monthlyGrossIncome === 0 || taxData.additionalMonthlyIncome === 0 || taxData.annualPensionContribution === 0 || taxData.annualNHFContributions === 0 || taxData.annualRentPaid === 0 || taxData.lifeInsurancePremiums === 0 || loading) return;
+    setError(null);
+
+    if (taxData.monthlyGrossIncome === 0 || taxData.additionalMonthlyIncome === 0 || taxData.annualPensionContribution === 0 || taxData.annualNHFContributions === 0 || taxData.annualRentPaid === 0 || taxData.lifeInsurancePremiums === 0 || loading) {
+    
+      setError("Please fill in all required fields.");
+      return
+    };
 
     setLoading(true);
 
