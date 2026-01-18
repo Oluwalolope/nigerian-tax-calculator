@@ -81,6 +81,7 @@ const Calculator = () => {
     try {
       const response = await fetch(`${apiUrl}/tax/calculate`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },

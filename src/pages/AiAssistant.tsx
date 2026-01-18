@@ -47,6 +47,7 @@ const AiAssistant = () => {
     try {
       const response = await fetch(`${apiUrl}/chat`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
