@@ -45,12 +45,12 @@ const AiAssistant = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${apiUrl}/chat`, {
+      const response = await fetch(`${apiUrl}/chat/`, {
         method: "POST",
-        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           userID: appCtx.userID,
           prompt: text,
